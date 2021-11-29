@@ -1,6 +1,5 @@
 #!/bin/bash
 
-game_on=true
 player=1
 game_type=-1
 board=(1 2 3 4 5 6 7 8 9)
@@ -42,23 +41,27 @@ function check_if_save_is_valid {
         echo "X and O does not match in save."
         return 1
     fi
+    moves=$moves_in_save
     return 0
-}
+};
 
 function load {
     read -r -a board < "$1"
     check_all
-    
 };
 
 function menu {
+    re='^[1-2]+$'
+    load_game=-1
     clear
     echo "Menu:"
     echo "1. New game"
     echo "2. Load game"
-    printf "Select: "
-    read -r load_game
-    if [ "$load_game" -eq 2 ]; then
+    while ! [[ $load_game =~ $re ]]; do
+        printf "Select: "
+        read -r load_game
+    done
+    if [ "$load_game" == 2 ]; then
         while true; do
             printf "Enter save game name (or type RETURN to start new game): "
             read -r save
@@ -80,13 +83,17 @@ function menu {
     echo "Game types:"
     echo "1. Play with computer"
     echo "2. Two players (turn-based multiplayer)"
-    printf "Select: "
-    read -r game_type
+    while !  [[ $game_type =~ $re ]]; do
+        printf "Select: "
+        read -r game_type
+    done
 };
 
 function check_row {
     if [ "${board[$1]}" == "${board[$2]}" ] && [ "${board[$2]}" == "${board[$3]}" ]; then
-        game_on=false
+        print_board
+        echo "Player $player won."
+        exit
     fi
 };
 
@@ -99,11 +106,6 @@ function check_all {
     check_row 2 5 8
     check_row 2 4 6
     check_row 0 4 8
-    if [ $game_on == false ]; then
-        print_board
-        echo "Player $player won."
-        exit
-    fi
     
     if [ $moves -eq 9 ]; then
         print_board
@@ -128,7 +130,7 @@ function change_player {
     else
         player=1
     fi
-}
+};
 
 function make_move {
     if [ $player -eq 1 ]; then
@@ -137,7 +139,7 @@ function make_move {
         board[$1]="O"
     fi
     echo "Player $player make move $1" >> log.txt
-}
+};
 
 function select_field {
     if [ $player -eq 1 ]; then
@@ -179,7 +181,7 @@ function select_field {
         read -r selected_field
     done
     make_move $((selected_field-1))
-}
+};
 
 function cpu_move {
     selected_field=$((RANDOM % 9))
@@ -187,7 +189,7 @@ function cpu_move {
         selected_field=$((RANDOM % 9))
     done
     make_move $selected_field
-}
+};
 
 function play {
     while true ;
@@ -203,4 +205,4 @@ function play {
         
         change_player
     done
-}
+};
