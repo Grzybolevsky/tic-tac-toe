@@ -1,0 +1,6 @@
+*
+!.gitignore
+!play.sh
+!functions.sh
+!README.md 
+!clear.sh

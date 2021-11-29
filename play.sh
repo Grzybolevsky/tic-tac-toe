@@ -2,7 +2,7 @@
 
 source ./functions.sh
 
-init_game
-
-
-
+rm log.txt
+touch log.txt
+menu
+play
