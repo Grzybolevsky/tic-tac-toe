@@ -38,7 +38,7 @@ function check_if_save_is_valid {
     done
     
     if [ $x_count -ne $y_count ]; then
-        echo "X and O does not match in save."
+        echo "X and O count does not match in save."
         return 1
     fi
     moves=$moves_in_save
